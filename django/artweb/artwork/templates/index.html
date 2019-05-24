@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{{conf.page_name}}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/png" href="{{conf.favicon.url}}"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        function up(){
+            window.scrollTo(0, 0);
+        }
+
+        $(document).ready(function(){
+
+            let translate_values = new Map();
+
+            $( ".right" ).click(function() {
+                id = $(this).attr('id');
+
+                let t = translate_values.get(id) ? translate_values.get(id) : 0;
+                let window_width = $(document).width();
+                let slide_size = window_width / 2;
+                t = Math.max(window_width-document.getElementById("carousel-"+id ).getBoundingClientRect().width, t - slide_size)
+
+                translate_values.set(id, t);
+
+                $("#carousel-"+id ).css("transform","translate("+t+"px)");
+            });
+
+            $( ".left" ).click(function() {
+                id = $(this).attr('id');
+
+                let t = translate_values.get(id) ? translate_values.get(id) : 0;
+                let window_width = $(document).width();
+                let slide_size = window_width / 2;
+                t = Math.min(0, t + slide_size)
+
+                translate_values.set(id, t);
+
+                $("#carousel-"+id ).css("transform","translate("+t+"px)");
+            });
+        });
+
+    </script>
+</head>
+
+<body id="body">
+
+    <div id="bpg">
+
+        <div class="main-app">
+
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+              <a class="navbar-brand" href="#">{{conf.page_name}}</a>
+
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                                {% for m in menus %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="#ref{{m.menu_id}}">{{m.name}}<span class="sr-only"></span></a>
+                  </li>
+                                {% endfor %}
+                </ul>
+              </div>
+            </nav> 
+
+
+            <div class="main-content">
+                {% for m in menus %}
+
+                {% if not forloop.first %}
+                <div class="page_title" id="ref{{m.menu_id}}"><span onclick="up();" class="arrow top"></span><span>{{m.name}}</span></div>
+                {% endif %}
+                {% if m.background %}
+                <div class="content bg" style="background-image: url('{{m.background.picture.url}}')">
+                {% else %}
+                <div class="content">
+                {% endif %}
+                    
+                    {% for c in m.content %}
+                    {% if c.type == "carousel" %}
+                    <div class="main-galery">
+
+
+                        <span id="{{c.obj.carousel_id}}" class='arrow right'></span>
+                        <span id="{{c.obj.carousel_id}}" class='arrow left'></span>
+
+
+                        <div id="carousel-{{c.obj.carousel_id}}" class="carousel">
+
+                            {% for a in c.obj.artworks_ %}
+                            <div class="galery-item"><img src="{{a.picture.url}}"></div>
+                            {% endfor %}
+
+                        </div>
+
+
+                    </div>
+                    {% endif %}
+                        
+                    {% if c.type == "text" %}
+                    <div class="main-text">
+                        <div class="opaque_white">
+                            <div class="text-item">{{ c.obj.text|safe }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if c.type == "image" and not c.obj.is_background %}
+                    <div class="image"><img src="{{c.obj.picture.url}}"></div>
+                    {% endif %}
+                
+                    {% endfor %}
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+</body>
+
+</html>

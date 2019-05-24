@@ -1,0 +1,10 @@
+uwsgi:
+    chdir: %ddjango/artweb/
+    socket: artweb.sock
+    chmod-socket: 666
+    module: artweb.wsgi:application
+    master: true
+    processes: %k
+    req-logger: file:/tmp/reqlog
+    logger: file:/var/log/django/artweb.log
+    stats: 0.0.0.0:9191

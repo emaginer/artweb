@@ -1,0 +1,5 @@
+artweb/*.sqlite3
+*.pyc
+artweb/img
+artweb/media
+
