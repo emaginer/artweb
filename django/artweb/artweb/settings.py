@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q2*&y2l(%p=r!w53mq=4o&$5pho2e8%f0_zmoio6g#8vb!ec3d'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'localhost:3000']
+ALLOWED_HOSTS = ['localhost', 'localhost:3000'] + [os.getenv('ALLOWED_HOSTS')]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = (
     'x-requested-with',
@@ -38,9 +38,6 @@ CORS_ALLOW_HEADERS = (
     'accept-encoding',
     'x-referrer',
 )
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR + '/media'
 
 # Application definition
 
@@ -55,6 +52,7 @@ INSTALLED_APPS = (
 
     'rest_framework',
     'colorfield',
+    'storages',
 
     'artwork'
 )
@@ -118,12 +116,23 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-#STATIC_ROOT = os.path.join(BASE_DIR, "/static")
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')
+
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_CUSTOM_DOMAIN = '%s.%s' % (AWS_STORAGE_BUCKET_NAME, AWS_S3_ENDPOINT_URL)
+AWS_S3_ENDPOINT_URL = 'https://%s' % AWS_S3_ENDPOINT_URL
+# s3 static settings
+AWS_LOCATION = 'media'
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
 STATIC_ROOT = BASE_DIR + '/public/static'
-
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
