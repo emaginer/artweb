@@ -64,7 +64,7 @@ class Artwork(models.Model):
     is_visible = models.BooleanField(default=True, help_text=_('Coché si l\'image doit être affichée sur le site'), verbose_name='Est visible ?')
     name = models.CharField(max_length=255, null=True, blank=True, verbose_name='Nom')
     description = models.CharField(max_length=255, null=True, blank=True, verbose_name='Description')
-    picture = models.ImageField(blank=True, upload_to='img', verbose_name='Photo')
+    picture = models.FileField(blank=True, upload_to='img', verbose_name='Photo')
 
     order = models.IntegerField(default=0, verbose_name='Ordre d\'apparition')
     is_background = models.BooleanField(default=False, help_text=_('Coché pour que l\'image soit le fond de la barre de menu'), verbose_name='Mis en fond ?')
