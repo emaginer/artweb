@@ -4,6 +4,7 @@ django-cors-headers==2.4.0
 djangorestframework==3.8.2
 Pillow==5.2.0
 six==1.11.0
-psycopg2==2.7.5
-django-storages
+psycopg2-binary
+boto
 boto3
+django-storages
